@@ -1,36 +1,55 @@
 package Vista;
+
+import Modelo.TipoApuesta;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import Modelo.Usuario;
 
-class VentanaRuleta {private final JFrame frame = new JFrame("Ruleta - Casino Never Win");
-    private final JButton btnSalir = new JButton("Salir");
-    private final JButton btnJugar = new JButton("Jugar")
+public class VentanaRuleta {
+    private final JFrame frame = new JFrame("Ruleta - Casino Black Cat");
+    private final JTextField txtApuesta = new JTextField();
+    private final JComboBox<TipoApuesta> cboTipo = new JComboBox<>(TipoApuesta.values());
+    private final JButton btnGirar = new JButton("Girar");
+    private final JTextArea txtResultado = new JTextArea();
+    private final JLabel lblSaldo = new JLabel("Saldo: $0");
 
     public VentanaRuleta() {
-        configurarVentana();
-        configurarEventos();
+        iniciarVentanaRuleta();
+        iniciarComponentes();
     }
-    private void configurarEventos() {
-        btnSalir.addActionListener(e -> new VentanaMenu().mostrarVentana());
-        btnSalir.addActionListener(e -> cerrarVentana());
-        //btnJugar.addActionListener(e -> );
-    }
-    private void configurarVentana() {
-        frame.setSize(550, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(3, 2, 5, 5));
-        frame.add(new JLabel("Ruleta - Casino Never Win"));
-        frame.add(btnSalir);
+    private void iniciarVentanaRuleta() {
+        frame.setVisible(false); //controlador la muestra
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(null);
+        frame.setSize(800, 600);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
     }
+    private void iniciarComponentes() {
+        JLabel lblApuesta = new JLabel("Monto:");
+        lblApuesta.setBounds(30, 50, 50, 30);
+        txtApuesta.setBounds(90, 50, 100, 30);
+        lblSaldo.setBounds(30, 10, 200, 30);
 
-    public void mostrarVentana() {
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
+        cboTipo.setBounds(210, 50, 100, 30);
+        btnGirar.setBounds(330, 50, 100, 30);
+
+        txtResultado.setBounds(30, 100, 400, 200);
+        txtResultado.setEditable(false);
+
+        frame.add(lblSaldo);
+        frame.add(lblApuesta);
+        frame.add(txtApuesta);
+        frame.add(cboTipo);
+        frame.add(btnGirar);
+        frame.add(txtResultado);
     }
-    public void cerrarVentana() {
-        frame.dispose();
+    public void mostrar(){
+        frame.setVisible(true); //para que lo llame el controlador
     }
+    public JFrame getFrame() { return frame; }
+    public JTextField getTxtApuesta() { return txtApuesta; }
+    public JComboBox<TipoApuesta> getCboTipo() { return cboTipo; }
+    public JButton getBtnGirar() { return btnGirar; }
+    public JTextArea getTxtResultado() { return txtResultado; }
+    public JLabel getLblSaldo() { return lblSaldo; }
 }

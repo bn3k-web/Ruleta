@@ -1,9 +1,5 @@
 package Modelo;
 
 public enum TipoApuesta {
-    ROJO,
-    NEGRO,
-    PAR,
-    IMPAR
+    ROJO, NEGRO, PAR, IMPAR
 }
-

@@ -1,52 +1,65 @@
 package Vista;
 
 import javax.swing.*;
-import java.awt.*;
+import static java.awt.Color.BLACK;
 
 public class VentanaMenu {
-    private final JFrame frame = new JFrame("Ruleta - Casino Black Cat");
+    private final JFrame frame = new JFrame("Modelo.Ruleta - Casino Black Cat");
     private final JButton btnInicio = new JButton("Inicio");
     private final JButton btnJugar = new JButton("Jugar");
     private final JButton btnHistorial = new JButton("Historial");
     private final JButton btnSalir = new JButton("Salir");
+    private final JLabel lblExplicacionTitulo = new JLabel("Modelo.Ruleta - Casino Black Cat");
+    private final JTextArea lblExplicacionCuerpo = new JTextArea("""
+            Bienvenido al menú principal
+            
+            A la izquierda tienes:
+            
+            Jugar: Abre la ventana de juego
+            
+            Historial: Abre la ventana de historial
+            
+            Salir: Cierra sesión y vuelve al login""");
 
     public VentanaMenu() {
-        configurarVentana();
-        configurarEventos();
-    }
-    private void configurarEventos() {
-        //btnInicio.addActionListener(this::registrarUsuario);
-        btnJugar.addActionListener(e -> new VentanaRuleta().mostrarVentana());
-        btnJugar.addActionListener(e -> cerrarVentana());
-        btnHistorial.addActionListener(e -> new VentanaHistorial().mostrarVentana());
-        btnHistorial.addActionListener(e -> cerrarVentana());
-        btnSalir.addActionListener(e -> new VentanaLogin().mostrarVentana());
-        btnSalir.addActionListener(e -> cerrarVentana());
-
-    }
-    private void configurarVentana() {
-        frame.setSize(550, 300);
+        frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(3, 2, 5, 5));
+        frame.setSize(400, 400);
 
-        frame.add(new JLabel("Ruleta - Casino Black Cat"));
-        frame.add(new JLabel("Bienvenido al menú principal.\n" +
-                "Abajo tienes:\n" +
-                "-Jugar: abre la ventana de juego\n" +
-                "-Historial: Abre la ventana de historial \n" +
-                "-Salir: CIerra sesion y vuelve al login. "));
         frame.add(btnInicio);
         frame.add(btnJugar);
         frame.add(btnHistorial);
         frame.add(btnSalir);
-        frame.setLocationRelativeTo(null);
+
+        btnInicio.setBounds(10, 100, 80, 40);
+        btnJugar.setBounds(10, 150, 80, 40);
+        btnHistorial.setBounds(10, 200, 80, 40);
+        btnSalir.setBounds(10, 250, 80, 40);
+
+        frame.add(lblExplicacionTitulo);
+        lblExplicacionTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        lblExplicacionTitulo.setBounds(150, 50, 150, 50);
+
+        frame.add(lblExplicacionCuerpo);
+        lblExplicacionCuerpo.setBounds(100, 100, 200, 250);
+        lblExplicacionCuerpo.setBorder(BorderFactory.createLineBorder(BLACK));
+        lblExplicacionCuerpo.setEditable(false);
+        lblExplicacionCuerpo.setOpaque(false);
+        lblExplicacionCuerpo.setLineWrap(true);
+        lblExplicacionCuerpo.setWrapStyleWord(true);
+
+        mostrarMenu();
     }
 
-    public void mostrarVentana() {
-        frame.setVisible(true);
+    public void mostrarMenu() {
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
     }
-    public void cerrarVentana() {
-        frame.dispose();
-    }
+
+
+    public JFrame getFrame() { return frame; }
+    public JButton getBtnSalir() { return btnSalir; }
+    public JButton getBtnJugar() { return btnJugar; }
+    public JButton getBtnHistorial() { return btnHistorial; }
 }

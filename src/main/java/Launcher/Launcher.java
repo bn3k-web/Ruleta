@@ -1,17 +1,17 @@
 package Launcher;
-import Vista.VentanaLogin;
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import Controlador.SessionController;
-import Vista.VentanaLogin;
 
-// ------------------ Clase Main ------------------
+import Controlador.SessionController;
+import Vista.VentanaLoginRuleta;
+import javax.swing.SwingUtilities;
+
 public class Launcher {
-    public static void main(String[] args) {
-        SessionController session = new SessionController();
-        new VentanaLogin().mostrarVentana();
+    static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            SessionController session = new SessionController();
+            session.registrarUsuario("admin", "1234", "Administrador");
+            session.registrarUsuario("Juanin", "abcd", "Juanin Harry");
+            new VentanaLoginRuleta(session).mostrarVentana();
+        });
     }
+
 }
