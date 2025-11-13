@@ -1,7 +1,5 @@
 package Vista;
 
-import Historial.IRepositorioResultados;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -59,19 +57,6 @@ public class VentanaMenu {
         lblExplicacionCuerpo.setOpaque(false);
         lblExplicacionCuerpo.setLineWrap(true);
         lblExplicacionCuerpo.setWrapStyleWord(true);
-    }
-
-    public void configurarEventos(IRepositorioResultados repositorio) {
-        // Botón HISTORIAL
-        btnHistorial.addActionListener(e -> {
-            VentanaHistorial ventanaHistorial = new VentanaHistorial(repositorio);
-            ventanaHistorial.mostrar();
-        });
-        // Botón SALIR
-        btnSalir.addActionListener(e -> {
-            frame.dispose(); // cierra la ventana actual
-            JOptionPane.showMessageDialog(null, "Has cerrado sesión");
-        });
     }
 
     public void mostrarMenu() {

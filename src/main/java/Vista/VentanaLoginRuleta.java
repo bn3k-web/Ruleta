@@ -1,13 +1,14 @@
 package Vista;
 
 import Controlador.SessionController;
-import Historial.RepositorioEnMemoria;
+import Historial.IRepositorioResultados;
 import Modelo.Menu;
 
 import javax.swing.*;
 
 public class VentanaLoginRuleta {
     private final SessionController session;
+    private final IRepositorioResultados repositorio; // ✅ Ahora recibe el repositorio
 
     private final JFrame frame = new JFrame("Login - Casino Black Cat");
     private final JLabel lblUsuario = new JLabel("Usuario:");
@@ -16,8 +17,10 @@ public class VentanaLoginRuleta {
     private final JPasswordField txtClave = new JPasswordField();
     private final JButton btnIngresar = new JButton("Ingresar");
 
-    public VentanaLoginRuleta(SessionController session) {
+    // ✅ Constructor actualizado - AHORA ACEPTA DOS PARÁMETROS
+    public VentanaLoginRuleta(SessionController session, IRepositorioResultados repositorio) {
         this.session = session;
+        this.repositorio = repositorio;
 
         inicializarVentana();
         configurarEventos();
@@ -28,14 +31,12 @@ public class VentanaLoginRuleta {
         frame.setSize(400, 400);
         frame.setLayout(null);
 
-        // Añadir componentes
         frame.add(lblUsuario);
         frame.add(txtUsuario);
         frame.add(lblClave);
         frame.add(txtClave);
         frame.add(btnIngresar);
 
-        // Posiciones
         lblUsuario.setBounds(50, 80, 300, 25);
         txtUsuario.setBounds(50, 120, 300, 25);
         lblClave.setBounds(50, 160, 300, 25);
@@ -58,25 +59,24 @@ public class VentanaLoginRuleta {
         String clave = new String(txtClave.getPassword());
 
         if (usuario.isEmpty() || clave.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Debe completar todos los campos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Debe completar todos los campos.", 
+                "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (session.iniciarSesion(usuario, clave)) {
-            JOptionPane.showMessageDialog(frame, "Bienvenido " + session.getNombreUsuario() + " 🎰");
+            JOptionPane.showMessageDialog(frame, 
+                "Bienvenido " + session.getNombreUsuario() + " 🎰");
             frame.dispose();
 
-            // Crear repositorio de resultados (historial)
-            RepositorioEnMemoria repo = new RepositorioEnMemoria();
-
-            // Crear e iniciar menú principal
+            // ✅ Usar el mismo repositorio en toda la aplicación
             VentanaMenu vistaMenu = new VentanaMenu();
-            vistaMenu.configurarEventos(repo); // conectar botones con historial
-            new Menu(vistaMenu, session);
+            new Menu(vistaMenu, session, repositorio); // Pasar repositorio
             vistaMenu.mostrarMenu();
 
         } else {
-            JOptionPane.showMessageDialog(frame, "Usuario o clave incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, 
+                "Usuario o clave incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
