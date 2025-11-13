@@ -6,7 +6,6 @@ import Vista.VentanaMenu;
 import Vista.VentanaRuleta;
 import Vista.VentanaHistorial;
 import Historial.IRepositorioResultados;
-import Historial.RepositorioArchivo;
 
 import javax.swing.*;
 
@@ -15,10 +14,11 @@ public class Menu {
     private final SessionController session;
     private final IRepositorioResultados repositorio;
 
-    public Menu(VentanaMenu menu, SessionController session) {
+    // ✅ Constructor recibe el repositorio (NO lo crea)
+    public Menu(VentanaMenu menu, SessionController session, IRepositorioResultados repositorio) {
         this.menu = menu;
         this.session = session;
-        this.repositorio = new RepositorioArchivo("historial.csv"); // ✅ usa archivo persistente
+        this.repositorio = repositorio;
         configurarEventos();
     }
 
@@ -49,6 +49,7 @@ public class Menu {
             return;
         }
 
+        // ✅ Usar el mismo repositorio inyectado
         Ruleta modeloRuleta = new Ruleta(repositorio);
         VentanaRuleta vistaRuleta = new VentanaRuleta();
 

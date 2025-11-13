@@ -41,13 +41,11 @@ public class Ruleta {
         return false;
     }
 
-    // Guarda el resultado en el repositorio, no en arrays
     public void registrarResultado(int numeroGanador, int montoApostado, boolean acierto, TipoApuesta tipo) {
         Resultado resultado = new Resultado(numeroGanador, montoApostado, acierto, tipo);
         repositorio.agregarResultado(resultado);
     }
 
-    // 🔹 Devuelve el repositorio asociado (útil para las estadísticas o historial)
     public IRepositorioResultados getRepositorio() {
         return repositorio;
     }

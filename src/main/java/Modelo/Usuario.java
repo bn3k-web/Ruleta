@@ -1,11 +1,6 @@
 package Modelo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class Usuario {
-    private final List<Resultado> historial = new ArrayList<>();
     private double saldo;
     private final String username;
     private final String password;
@@ -16,7 +11,7 @@ public class Usuario {
         this.username = username;
         this.password = password;
         this.nombre = nombre;
-        this.saldo = 1000.0; // saldo inicial
+        this.saldo = 1000; // saldo inicial
     }
 
     // Validar credenciales
@@ -24,34 +19,26 @@ public class Usuario {
         return this.username.equals(u) && this.password.equals(p);
     }
 
-    // Actualiza el saldo después de una apuesta
+    // ✅ Solo actualiza saldo (NO guarda historial)
     public void actualizarSaldo(int montoApostado, boolean gano) {
         if (gano) {
-            this.saldo += montoApostado; // ganó: suma el monto
+            this.saldo += montoApostado;
         } else {
-            this.saldo -= montoApostado; // perdió: resta el monto
+            this.saldo -= montoApostado;
         }
         if (this.saldo < 0) this.saldo = 0; // evitar saldo negativo
-    }
-
-    // Registrar resultado de una jugada
-    public void agregarResultado(Resultado r) {
-        historial.add(r);
-        actualizarSaldo(r.getMontoApostado(), r.isAcierto());
     }
 
     // Getters
     public String getNombre() {
         return nombre;
     }
+    
     public double getSaldo() {
         return saldo;
     }
+    
     public String getUsername() {
         return username;
-    }
-
-    public List<Resultado> getHistorial() {
-        return Collections.unmodifiableList(historial);
     }
 }

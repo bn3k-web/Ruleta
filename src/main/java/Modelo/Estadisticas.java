@@ -79,7 +79,7 @@ public class Estadisticas {
 
     @Override
     public String toString() {
-        return "📊 Estadísticas:\n" +
+        return "  Estadísticas:\n" +
                 "- Total jugadas: " + totalJugadas + "\n" +
                 "- Victorias: " + victorias + "\n" +
                 "- Porcentaje de victorias: " + String.format("%.2f", porcentajeVictorias) + "%\n" +
