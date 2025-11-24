@@ -1,19 +1,14 @@
 package Modelo;
 
+/**
+ * Enum TipoApuesta
+ * 
+ * Define los tipos de apuestas disponibles en el juego.
+ */
 public enum TipoApuesta {
-    ROJO("Rojo"),
-    NEGRO("Negro"),
-    PAR("Par"),
-    IMPAR("Impar");
-
-    private final String descripcion;
-
-    TipoApuesta(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    @Override
-    public String toString() {
-        return descripcion;
-    }
+    ROJO,
+    NEGRO,
+    PAR,
+    IMPAR,
+    NUMERO // Reservado para futura implementación
 }

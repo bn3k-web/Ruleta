@@ -35,12 +35,13 @@ public class Estadisticas {
 
     public int calcularVictorias(List<Resultado> historial) {
         return (int) historial.stream()
-                .filter(Resultado::isAcierto)
+                .filter(r -> r != null && r.isAcierto())
                 .count();
     }
 
     public double calcularPorcentajeVictorias() {
-        if (totalJugadas == 0) return 0.0;
+        if (totalJugadas == 0)
+            return 0.0;
         return (victorias * 100.0) / totalJugadas;
     }
 
@@ -48,9 +49,12 @@ public class Estadisticas {
         int racha = 0;
         int rachaMax = 0;
         for (Resultado r : historial) {
+            if (r == null)
+                continue; // Ignorar nulos
             if (r.isAcierto()) {
                 racha++;
-                if (racha > rachaMax) rachaMax = racha;
+                if (racha > rachaMax)
+                    rachaMax = racha;
             } else {
                 racha = 0;
             }
@@ -60,10 +64,10 @@ public class Estadisticas {
 
     public TipoApuesta calcularTipoMasJugado(List<Resultado> historial) {
         Map<TipoApuesta, Long> conteo = historial.stream()
+                .filter(r -> r != null && r.getTipoApuesta() != null) // Filtrar nulos
                 .collect(Collectors.groupingBy(
                         Resultado::getTipoApuesta,
-                        Collectors.counting()
-                ));
+                        Collectors.counting()));
         return conteo.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
@@ -71,11 +75,25 @@ public class Estadisticas {
     }
 
     // Getters para mostrar resultados
-    public int getTotalJugadas() { return totalJugadas; }
-    public int getVictorias() { return victorias; }
-    public double getPorcentajeVictorias() { return porcentajeVictorias; }
-    public int getRachaMaxima() { return rachaMaxima; }
-    public TipoApuesta getTipoMasJugado() { return tipoMasJugado; }
+    public int getTotalJugadas() {
+        return totalJugadas;
+    }
+
+    public int getVictorias() {
+        return victorias;
+    }
+
+    public double getPorcentajeVictorias() {
+        return porcentajeVictorias;
+    }
+
+    public int getRachaMaxima() {
+        return rachaMaxima;
+    }
+
+    public TipoApuesta getTipoMasJugado() {
+        return tipoMasJugado;
+    }
 
     @Override
     public String toString() {

@@ -1,52 +1,55 @@
 package Modelo;
 
-import Historial.IRepositorioResultados;
 import java.util.Random;
-import static Modelo.TipoApuesta.*;
 
-
-
+/**
+ * Clase Ruleta
+ * 
+ * Representa la lógica del juego de la ruleta.
+ * Se encarga de generar el número ganador, evaluar si una apuesta es ganadora
+ * y registrar los resultados en el repositorio.
+ */
 public class Ruleta {
-    private final Random rng = new Random();
-    private final IRepositorioResultados repositorio;  // 🔹 inyección de dependencia
+    private final Random random = new Random();
+    private final Historial.IRepositorioResultados repositorio;
 
-    public Ruleta(IRepositorioResultados repositorio) {
+    public Ruleta(Historial.IRepositorioResultados repositorio) {
         this.repositorio = repositorio;
     }
 
-    // Genera un número aleatorio entre 0 y 36
     public int girarRuleta() {
-        return rng.nextInt(37);
+        return random.nextInt(37); // 0-36
     }
 
-    // Evalúa si el número coincide con el tipo de apuesta
     public boolean evaluarResultado(int numero, TipoApuesta tipo) {
-        if (numero == 0) {
-            return false;
-        }
+        if (tipo == TipoApuesta.NUMERO)
+            return false; // Simplificación: solo apuestas simples por ahora
+        if (numero == 0)
+            return false; // La casa gana con 0 en apuestas simples
+
+        boolean esRojo = esRojo(numero);
+        boolean esPar = (numero % 2 == 0);
+
         return switch (tipo) {
-            case ROJO -> esRojo(numero);
-            case NEGRO -> !esRojo(numero);
-            case PAR -> numero % 2 == 0;
-            case IMPAR -> numero % 2 != 0;
+            case ROJO -> esRojo;
+            case NEGRO -> !esRojo;
+            case PAR -> esPar;
+            case IMPAR -> !esPar;
+            default -> false;
         };
     }
 
-    // Determina si un número es rojo
-    public static boolean esRojo(int n) {
-        int[] NUMEROS_ROJOS = {1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36};
-        for (int rojo : NUMEROS_ROJOS) {
-            if (rojo == n) return true;
+    public static boolean esRojo(int numero) {
+        int[] rojos = { 1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36 };
+        for (int r : rojos) {
+            if (r == numero)
+                return true;
         }
         return false;
     }
 
-    public void registrarResultado(int numeroGanador, int montoApostado, boolean acierto, TipoApuesta tipo) {
-        Resultado resultado = new Resultado(numeroGanador, montoApostado, acierto, tipo);
+    public void registrarResultado(int numero, int monto, boolean acierto, TipoApuesta tipo) {
+        Resultado resultado = new Resultado(numero, monto, acierto, tipo);
         repositorio.agregarResultado(resultado);
-    }
-
-    public IRepositorioResultados getRepositorio() {
-        return repositorio;
     }
 }

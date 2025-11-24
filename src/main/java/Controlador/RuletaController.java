@@ -8,11 +8,20 @@ import Vista.VentanaRuleta;
 import javax.swing.*;
 import java.util.Objects;
 
+/**
+ * Clase RuletaController
+ * 
+ * Esta clase actúa como controlador para la lógica del juego de ruleta.
+ * Gestiona la interacción entre la vista (VentanaRuleta) y el modelo (Ruleta,
+ * Usuario).
+ * Se encarga de procesar las apuestas, girar la ruleta y actualizar la
+ * interfaz.
+ */
 public class RuletaController {
     private final SessionController session;
     private final Ruleta ruleta;
     private final VentanaRuleta ventanaRuleta;
-    private int contadorRondas = 0; // ✅ Contador local
+    private int contadorRondas = 0;
 
     public RuletaController(Ruleta ruleta, VentanaRuleta vista, SessionController session) {
         this.ruleta = ruleta;
@@ -29,55 +38,43 @@ public class RuletaController {
     private void actualizarInfoUsuario() {
         Usuario usuario = session.getUsuarioActual();
         if (usuario != null) {
-            ventanaRuleta.getLblSaldo().setText("Saldo: $" + String.format("%.2f", usuario.getSaldo()));
+            // Fix: Remove decimals
+            ventanaRuleta.getLblSaldo().setText("Saldo: $" + usuario.getSaldo());
         }
     }
 
     private void jugarRuleta() {
         Usuario usuario = session.getUsuarioActual();
         if (usuario == null) {
-            JOptionPane.showMessageDialog(ventanaRuleta.getFrame(), 
-                "Debe iniciar sesión para jugar.", 
-                "Error de Sesión", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(ventanaRuleta.getFrame(),
+                    "Debe iniciar sesión para jugar.",
+                    "Error de Sesión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!ventanaRuleta.validarApuesta(usuario.getSaldo())) {
             return;
         }
 
         try {
             int monto = Integer.parseInt(ventanaRuleta.getTxtApuesta().getText());
             TipoApuesta tipo = (TipoApuesta) Objects.requireNonNull(ventanaRuleta.getCboTipo().getSelectedItem());
-            
-            if (monto <= 0) {
-                JOptionPane.showMessageDialog(ventanaRuleta.getFrame(), 
-                    "El monto debe ser positivo.", 
-                    "Error de Apuesta", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            
-            if (usuario.getSaldo() < monto) {
-                JOptionPane.showMessageDialog(ventanaRuleta.getFrame(), 
-                    "Saldo insuficiente.", 
-                    "Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
 
-            // ✅ Lógica del juego
             int numeroGanador = ruleta.girarRuleta();
             boolean acierto = ruleta.evaluarResultado(numeroGanador, tipo);
-            
-            // ✅ Guardar EN UNA SOLA FUENTE (repositorio)
+
             ruleta.registrarResultado(numeroGanador, monto, acierto, tipo);
-            
-            // ✅ Actualizar solo el saldo del usuario
+
             usuario.actualizarSaldo(monto, acierto);
-            
+
             contadorRondas++;
             mostrarResultado(numeroGanador, tipo, monto, acierto);
             actualizarInfoUsuario();
 
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(ventanaRuleta.getFrame(), 
-                "Ingrese un monto numérico válido.", 
-                "Error de Entrada", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(ventanaRuleta.getFrame(),
+                    "Error al procesar la apuesta.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

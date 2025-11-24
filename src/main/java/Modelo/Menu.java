@@ -2,58 +2,50 @@ package Modelo;
 
 import Controlador.RuletaController;
 import Controlador.SessionController;
+import Historial.IRepositorioResultados;
+import Vista.VentanaHistorial;
 import Vista.VentanaMenu;
 import Vista.VentanaRuleta;
-import Vista.VentanaHistorial;
-import Historial.IRepositorioResultados;
 
-import javax.swing.*;
-
+/**
+ * Clase Menu
+ * 
+ * Controla la lógica de navegación del menú principal.
+ * Conecta la vista del menú con las acciones correspondientes (Jugar,
+ * Historial, Salir).
+ */
 public class Menu {
-    private final VentanaMenu menu;
+    private final VentanaMenu vista;
     private final SessionController session;
     private final IRepositorioResultados repositorio;
 
-    // ✅ Constructor recibe el repositorio (NO lo crea)
-    public Menu(VentanaMenu menu, SessionController session, IRepositorioResultados repositorio) {
-        this.menu = menu;
+    public Menu(VentanaMenu vista, SessionController session, IRepositorioResultados repositorio) {
+        this.vista = vista;
         this.session = session;
         this.repositorio = repositorio;
         configurarEventos();
     }
 
     private void configurarEventos() {
-        menu.getBtnSalir().addActionListener(e -> salirMenu());
-        menu.getBtnHistorial().addActionListener(e -> abrirHistorial());
-        menu.getBtnJugar().addActionListener(e -> jugarRuleta());
+        vista.getBtnSalir().addActionListener(e -> {
+            session.cerrarSesion();
+            vista.getFrame().dispose();
+            // Aquí se podría volver a mostrar el login si se tuviera referencia
+            System.exit(0); // Por ahora cerramos la app
+        });
+
+        vista.getBtnJugar().addActionListener(e -> abrirJuego());
+        vista.getBtnHistorial().addActionListener(e -> abrirHistorial());
     }
 
-    private void salirMenu() {
-        session.cerrarSesion();
-        JOptionPane.showMessageDialog(menu.getFrame(),
-                "Sesión cerrada correctamente. ¡Hasta pronto!",
-                "Salir", JOptionPane.INFORMATION_MESSAGE);
-        menu.getFrame().dispose();
+    private void abrirJuego() {
+        VentanaRuleta ventanaRuleta = new VentanaRuleta();
+        Ruleta ruleta = new Ruleta(repositorio);
+        new RuletaController(ruleta, ventanaRuleta, session);
+        ventanaRuleta.mostrar();
     }
 
     private void abrirHistorial() {
-        VentanaHistorial vistaHistorial = new VentanaHistorial(repositorio);
-        vistaHistorial.mostrar();
-    }
-
-    private void jugarRuleta() {
-        if (!session.hayUsuario()) {
-            JOptionPane.showMessageDialog(menu.getFrame(),
-                    "Debe iniciar sesión para jugar.",
-                    "Error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // ✅ Usar el mismo repositorio inyectado
-        Ruleta modeloRuleta = new Ruleta(repositorio);
-        VentanaRuleta vistaRuleta = new VentanaRuleta();
-
-        new RuletaController(modeloRuleta, vistaRuleta, session);
-        vistaRuleta.mostrar();
+        new VentanaHistorial(repositorio, session).mostrar();
     }
 }
